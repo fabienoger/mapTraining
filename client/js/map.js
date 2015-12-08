@@ -1,6 +1,8 @@
 if (Meteor.isClient) {
   $(document).ready(function() {
     Template.map.rendered = function() {
+      // Options for disable / unable latlng onclick
+      var latlng = true;
       L.Icon.Default.imagePath = 'packages/bevanhunt_leaflet/images';
       var map = L.map('map').setView([48.85, 2.34], 12);
 
@@ -39,13 +41,27 @@ if (Meteor.isClient) {
 
       var popup = L.popup();
       function onMapClick(e) {
-        popup
-          .setLatLng(e.latlng)
-          .setContent("You clicked the map at " + e.latlng.toString())
-          .openOn(map);
+          popup.setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map);
       }
 
-      map.on('click', onMapClick);
+      if (latlng == true)
+        map.on('click', onMapClick);
+      else
+        console.log("foo");
+
     }
+    Template.map.events({
+      'click #close-settings': function() {
+        if ($("#settings").css("right") == "30px")
+          $("#settings").animate({right: "-260px"});
+        else
+          $("#settings").animate({right: "30px"});
+      },
+      'click #latlng': function() {
+        latlng = !latlng;
+        console.log($("#latlng > i"));
+        console.log(latlng);
+      }
+    });
   });
 }
